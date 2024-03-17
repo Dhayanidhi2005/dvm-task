@@ -1,0 +1,7 @@
+{% extends "login/base.html" %}
+
+{% block content %}
+    {% for course in courses %}
+        <a href="{% url "stu-coursedetail" course.course_name %}">{{ course.course_name }}</a>
+    {% endfor %}
+{% endblock content %}

@@ -1,0 +1,20 @@
+{% extends "login/base.html" %}
+
+{% block content %}
+    <h1>{{course.course_name}}</h1>
+    <h2>Annoucements</h2>
+    {% for annoucement in annoucements %}
+        {{annoucement.title}}
+        <br>
+        {{annoucement.msg}}
+        <br>
+        <a href="{{annoucement.attachments.url}}">{{annoucement.attachments.name }}</a>
+        <br>
+        From:{{annoucement.prof}}
+    {% endfor %}
+    <h2>Course Content</h2>
+    {% for content in contents %}
+        {{content.title}}
+        <a href="{{content.attachments.url}}">{{ content.attachments.name }}</a>
+    {% endfor %}
+{% endblock content %}
