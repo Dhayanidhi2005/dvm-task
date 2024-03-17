@@ -38,6 +38,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    "django.contrib.sites",  # new
+    "allauth",  # new
+    "allauth.account",  # new
+    "allauth.socialaccount",  # new
+    "allauth.socialaccount.providers.google",
+
+    "login",
+    "students",
+    "professors",
 ]
 
 MIDDLEWARE = [
@@ -47,7 +57,13 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "allauth.account.middleware.AccountMiddleware",  
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",  
+    "allauth.account.auth_backends.AuthenticationBackend", 
 ]
 
 ROOT_URLCONF = "dvm.urls"
@@ -122,3 +138,27 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SITE_ID = 1  # new
+
+ACCOUNT_EMAIL_VERIFICATION = "none"  # new
+
+SOCIALACCOUNT_LOGIN_ON_GET = True  #for skipping the intermediate page on login
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        }
+    }
+}
+
+LOGIN_REDIRECT_URL = "prof-home"
+LOGOUT_REDIRECT_URL = "login"
