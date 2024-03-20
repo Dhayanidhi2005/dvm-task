@@ -4,6 +4,12 @@ from students.models import Students
 
 # Create your models here.
 
+def custom_path_for_announcement(instance, filename): 
+    return f"announcements/{ instance.course.course_name }/{filename}"
+
+def custom_path_for_content(instance, filename): 
+    return f"content/{ instance.course.course_name }/{filename}"
+
 class Department(models.Model):
     department = models.CharField(max_length=50)
 
@@ -16,7 +22,10 @@ class Branch(models.Model):
     branch_code = models.CharField(max_length=2)
 
     def __str__(self) :
-        return f"{self.branch}({self.dept.department})"
+        return f"{self.branch}({self.dept.department} Department)"
+    
+    class Meta:
+        verbose_name_plural = "Branches"
     
 class CourseList(models.Model):
 
@@ -40,8 +49,14 @@ class CourseList(models.Model):
     course_name = models.CharField(max_length=100)
     cdcs = models.CharField(max_length=3,choices=cdc_choices,blank=True)
     #so that in case of electrical dept we know it is cdc of which branch
-    branch = models.ForeignKey(Branch,on_delete=models.CASCADE)    
+    branch = models.ForeignKey(Branch,on_delete=models.CASCADE,null=True)    
     electives = models.CharField(max_length=4,choices=electives_choices,blank=True)
+
+    def __str__(self) :
+        return f"{self.course_name}"
+    
+    class Meta:
+        verbose_name_plural = "Course List"
 
 class Courses(models.Model):
     course = models.ForeignKey(CourseList,on_delete = models.CASCADE)    
@@ -74,3 +89,21 @@ class Professors(models.Model):
     
     class Meta:
         verbose_name_plural = "Professors"
+
+class Announcements(models.Model):
+    title = models.CharField(max_length=100)
+    msg = models.TextField()
+    attachments = models.FileField(upload_to=custom_path_for_announcement)
+    prof = models.ForeignKey(Professors,on_delete=models.SET_NULL,null=True)
+    course = models.ForeignKey(CourseList,on_delete=models.CASCADE)
+
+    def __str__(self) :
+        return f"{self.title}"
+    
+    class Meta:
+        verbose_name_plural = "Announcements"
+    
+class Content(models.Model):
+    title = models.CharField(max_length=100)
+    attachments = models.FileField(upload_to=custom_path_for_content)
+    course = models.ForeignKey(CourseList,on_delete=models.CASCADE)

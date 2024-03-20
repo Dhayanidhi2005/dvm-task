@@ -145,9 +145,6 @@ ACCOUNT_EMAIL_VERIFICATION = "none"  # new
 
 SOCIALACCOUNT_LOGIN_ON_GET = True  #for skipping the intermediate page on login
 
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
-
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": [
@@ -162,3 +159,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 LOGIN_REDIRECT_URL = "prof-home"
 LOGOUT_REDIRECT_URL = "login"
+
+MEDIA_ROOT = os.path.join(BASE_DIR,"media")
+MEDIA_URL = "/media/"

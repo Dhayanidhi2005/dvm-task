@@ -1,17 +1,54 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.views.generic import View
 
-from professors.models import Courses
+from professors.models import Courses,Professors,CourseList,Announcements,Content
 from .models import Students
+from .forms import ProfileCreationForm
 
-# Create your views here.
-
-def curr_student(request):
-    curr_user = request.user
-    return Students.objects.get(user=curr_user)
+class ProfileCreationView(View):
+    def get(self,request):
+        form = ProfileCreationForm()
+        return render(request,"students/create.html",{
+            "form":form,
+        })
+    def post(self,request):
+        form = ProfileCreationForm(request.POST,request.FILES)
+        if form.is_valid():
+            curr_user = request.user
+            new_profile = Students(
+                user =curr_user,
+                bitsid = form.cleaned_data.get('bitsid'),
+            )
+            new_profile.save()
+            return redirect("stu-home")
+        return render(request,"students/create.html",{
+            "form":form,
+        })
 
 def home(request):
-    curr_user = curr_student(request)
-    user_courses = Courses.objects.filter(student=curr_user)
-    return render(request,"students/home.html",{
-        "courses":user_courses,
+    try:
+        curr_user = Students.objects.get(user=request.user)
+        user_courses = Courses.objects.filter(student=curr_user)
+        return render(request,"students/home.html",{
+            "courses":user_courses,
+        })
+    except Students.DoesNotExist:
+        return redirect("create-profile")
+    
+def course_detail(request,pk):
+    try:
+        Professors.objects.get(prof=request.user)
+        prof=True
+    except Professors.DoesNotExist:
+        prof=False
+    selected_course = CourseList.objects.get(pk=pk)
+    course_annoucements = Announcements.objects.filter(course=selected_course)
+    course_content = Content.objects.filter(course=selected_course)
+        
+    return render(request,"students/course-detail.html",{
+        "course":selected_course,
+        "annoucements":course_annoucements,
+        "contents":course_content,
+        "prof":prof,
     })
+    

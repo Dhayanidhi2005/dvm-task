@@ -1,0 +1,36 @@
+{% extends "login/base.html" %}
+
+{% block content %}
+    <h1>{{course.course_name}}</h1>
+    <h2>Annoucements</h2>
+    {% if prof %}
+        <a href="{% url "add-announce" course.pk %}"><button>Add Annoucements</button></a>
+    {%endif%}
+    <ul>
+    {% for annoucement in annoucements %}
+    <li>
+        <h3>{{annoucement.title}}</h3>
+        <p>{{annoucement.msg}}</p>
+        {%if announcement.attachments %}
+            <a href="{{annoucement.attachments.url}}">{{annoucement.attachments.name }}</a>
+            <br>
+        {% endif %}
+        <p>From:{{annoucement.prof}}</p>
+    </li>
+    {% endfor %}
+    </ul> 
+    <h2>Course Content</h2>
+    {% if prof %}
+        <a href="{% url "add-content" course.pk %}"><button>Add Content</button></a>
+    {%endif%}
+    <br>
+    <ul>
+    {% for content in contents %}
+        <li>
+        <h3>{{content.title}}</h3>
+        <a href="{{content.attachments.url}}">{{ content.attachments.name }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+    
+{% endblock content %}

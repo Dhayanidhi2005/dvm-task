@@ -1,0 +1,11 @@
+{% extends "login/base.html" %}
+
+{% block content %}
+    {% for course in courses %}
+        {% if prof %}
+            <a href="{% url "prof-coursedetail" course.pk %}">{{ course.course_name }}</a>
+        {% else %}
+            <a href="{% url "stu-coursedetail" course.course.pk %}">{{ course.course.course_name }}</a><br>
+        {% endif %}
+    {% endfor %}
+{% endblock content %}
