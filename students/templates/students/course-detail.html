@@ -32,5 +32,22 @@
         </li>
     {% endfor %}
     </ul>
-    
+    <h2>Evaluatives</h2>
+    {% if prof %}
+        <a href="{% url "add-evals" course.pk %}"><button>Add Eval</button></a>
+    {%endif%}
+    <br>
+    <ul>
+    {% for eval in evals %}
+        <li>
+        {% if prof %}
+            <h3>{{eval.title}}</h3>
+            <a href="{% url "add-eval-mark" course.pk eval.title %}"><button>Add Marks</button></a>
+        {% else %}
+            <h3>{{eval.title}}</h3>
+            Your Score:{{ eval.marks }} out of {{ eval.total_marks}}
+        {% endif %}
+        </li>
+    {% endfor %}
+    </ul> 
 {% endblock content %}
