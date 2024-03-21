@@ -7,6 +7,12 @@
 </head>
 <body>
     <h1>Nalanda</h1>
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+    <br>
     {% block content %}{% endblock content %}
 </body>
 </html>

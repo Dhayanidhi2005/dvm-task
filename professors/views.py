@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse
+from django.contrib import messages
 from django.views.generic import View
 from django.views.generic.edit import CreateView
 
 from .models import Professors,CourseList,Announcements,Courses,Evals
-from .forms import AddAnnouncementForm,AddContentForm,AddEvalsForm,AddMarksForm
+from .forms import AddAnnouncementForm,AddContentForm,AddEvalsForm,AddMarksForm,AddGradesForm
 # Create your views here.
 
 def home(request):
@@ -89,3 +90,43 @@ class AddMarkView(CreateView):
 
     def get_success_url(self):
         return reverse("prof-coursedetail",kwargs={"pk":self.kwargs['pk']})
+    
+def add_final_grade(request,pk):
+    if request.method=="POST":
+        form = AddGradesForm(request.POST)
+        if form.is_valid():
+            req_courses = Courses.objects.filter(course=pk).order_by("marks")
+            print(form.cleaned_data.values())
+            list_val = list(form.cleaned_data.values())
+            if req_courses.count()!=sum(list_val):
+                messages.error(request,"Kindly ensure that the sum of all the given fields equals the number of students enrolled in the course")
+                return render(request,"students/create.html",{"form":form})
+            
+            no=0
+            for course in req_courses:
+                if no<sum(list_val[0:1]):
+                    course.grade="A"
+                elif sum(list_val[0:1])<=no<sum(list_val[0:2]):
+                    course.grade="A-"
+                elif sum(list_val[0:2])<=no<sum(list_val[0:3]):
+                    course.grade="B"
+                elif sum(list_val[0:3])<=no<sum(list_val[0:4]):
+                    course.grade="B-"
+                elif sum(list_val[0:4])<=no<sum(list_val[0:5]):
+                    course.grade="C"
+                elif sum(list_val[0:5])<=no<sum(list_val[0:6]):
+                    course.grade="C-"
+                elif sum(list_val[0:6])<=no<sum(list_val[0:7]):
+                    course.grade="D"
+                elif sum(list_val[0:7])<=no<sum(list_val[0:8]):
+                    course.grade="E"
+                elif sum(list_val[0:8])<=no:
+                    course.grade="NC"
+                course.save()
+                no+=1
+
+            return redirect("prof-coursedetail",pk=pk)
+    form = AddGradesForm()
+    return render(request,"students/create.html",{
+        "form":form,
+    })

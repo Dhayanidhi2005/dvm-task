@@ -49,5 +49,15 @@
         {% endif %}
         </li>
     {% endfor %}
-    </ul> 
+    </ul>
+    <h2>Final Grades</h2>
+    {% if prof %}
+        <a href="{% url "add-grades" course.pk %}"><button>Publish Grades</button></a>
+    {% else %}
+        {% if grade %}
+            <p>Your Grade:{{ grade}}</p>
+        {% else %}
+            <p>Your Grades have not been published yet</p>
+        {%endif%}
+    {%endif%}
 {% endblock content %}

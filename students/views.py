@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.views.generic import View
 
-from professors.models import Courses,Professors,CourseList,Announcements,Content,Evals
+from professors.models import Courses,Professors,CourseList,Announcements,Content,Evals,Branch
 from .models import Students
 from .forms import ProfileCreationForm
 
@@ -46,8 +46,10 @@ def course_detail(request,pk):
     course_content = Content.objects.filter(course=selected_course)
     if prof:
         evals = Evals.objects.filter(course = selected_course).distinct()
+        stu_grade = None
     else:
         curr_student = Students.objects.get(user=request.user)
+        stu_grade = Courses.objects.get(course=selected_course,student=curr_student).grade
         evals = Evals.objects.filter(student=curr_student,course=selected_course)
         
     return render(request,"students/course-detail.html",{
@@ -56,5 +58,5 @@ def course_detail(request,pk):
         "contents":course_content,
         "prof":prof,
         "evals":evals,
+        "grade":stu_grade,
     })
-    

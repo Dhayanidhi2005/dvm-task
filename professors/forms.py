@@ -47,3 +47,14 @@ class AddMarksForm(forms.ModelForm):
     class Meta:
         model = Evals
         fields = ["student","marks"]
+
+class AddGradesForm(forms.Form):
+    a= forms.IntegerField(label="Enter no of people for whom A should be added",min_value=0)
+    a_= forms.IntegerField(label="Enter no of people for whom A- should be added",min_value=0)
+    b= forms.IntegerField(label="Enter no of people for whom B should be added",min_value=0)
+    b_= forms.IntegerField(label="Enter no of people for whom B- should be added",min_value=0)
+    c= forms.IntegerField(label="Enter no of people for whom C should be added",min_value=0)
+    c_= forms.IntegerField(label="Enter no of people for whom C- should be added",min_value=0)
+    d= forms.IntegerField(label="Enter no of people for whom D should be added",min_value=0)
+    e= forms.IntegerField(label="Enter no of people for whom E should be added",min_value=0)
+    nc = forms.IntegerField(label="Enter no of people for whom NC should be added",min_value=0)
