@@ -60,12 +60,29 @@ class CourseList(models.Model):
     class Meta:
         verbose_name_plural = "Course List"
 
+class Semester(models.Model):
+
+    sem_choices = [
+        ("S1","Semester 1"),
+        ("S2","Semester 2"),
+    ]
+
+    sem = models.CharField(max_length=3,choices=sem_choices)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    reg_date = models.DateField() 
+    reg_date_last = models.DateField() 
+
+    def __str__(self) :
+        return f"{self.sem}:{self.start_date} to {self.end_date}"
+
 class Courses(models.Model):
     course = models.ForeignKey(CourseList,on_delete = models.CASCADE)    
     student = models.ForeignKey(Students,on_delete=models.CASCADE)
     marks = models.IntegerField()
     grade=models.CharField(max_length=2,null=True)
     date_added = models.DateField(auto_now_add=True)
+    sem = models.ForeignKey(Semester,on_delete = models.CASCADE,null=True)
 
     def __str__(self):
         return f"{self.course.course_name}:{self.student.bitsid}"
@@ -100,6 +117,7 @@ class Announcements(models.Model):
     attachments = models.FileField(upload_to=custom_path_for_announcement)
     prof = models.ForeignKey(Professors,on_delete=models.SET_NULL,null=True)
     course = models.ForeignKey(CourseList,on_delete=models.CASCADE)
+    sem = models.ForeignKey(Semester,on_delete = models.CASCADE,null=True)
 
     def __str__(self) :
         return f"{self.title}"
@@ -111,6 +129,7 @@ class Content(models.Model):
     title = models.CharField(max_length=100)
     attachments = models.FileField(upload_to=custom_path_for_content)
     course = models.ForeignKey(CourseList,on_delete=models.CASCADE)
+    sem = models.ForeignKey(Semester,on_delete = models.CASCADE,null=True)
 
     def __str__(self) :
         return f"{self.title}"
@@ -121,6 +140,7 @@ class Evals(models.Model):
     course = models.ForeignKey(CourseList,on_delete=models.CASCADE)
     student = models.ForeignKey(Students,on_delete=models.CASCADE)
     marks = models.IntegerField(default=0)
+    sem = models.ForeignKey(Semester,on_delete = models.CASCADE,null=True)
 
     def __str__(self) :
         return f"{self.student.bitsid}'s {self.title}"

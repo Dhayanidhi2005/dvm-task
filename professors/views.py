@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 
 import dvm.settings as settings
 from dvm.decorators import professor_required,ProfessorLoginRequiredMixin
-from students.views import course_detail
+from students.views import course_detail,get_current_sem
 from students.models import Students
 from .models import Professors,CourseList,Announcements,Courses,Evals,Content
 from .forms import AddAnnouncementForm,AddContentForm,AddEvalsForm,AddMarksForm,AddGradesForm,AddCourseForm,AddStudentsForm,UpdateStudentMarks
@@ -34,6 +34,7 @@ def add_announcements(request,pk):
                 attachments = form.cleaned_data['attachments'],
                 prof = req_prof,
                 course = req_course,
+                sem=get_current_sem(),
             )
             subject = req_course.course_name+":"+form.cleaned_data['title']
             message = form.cleaned_data['msg']+"\nfrom:"+str(req_prof)
@@ -64,6 +65,7 @@ class ContentCreateView(ProfessorLoginRequiredMixin,View):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.course = CourseList.objects.get(pk=kwargs["pk"])
+            obj.sem=get_current_sem()
             obj.save()
             return redirect("prof-coursedetail",pk=kwargs["pk"])
         return render(request,"students/create.html",{
@@ -78,6 +80,7 @@ class EvalCreateView(ProfessorLoginRequiredMixin,CreateView):
 
     def form_valid(self, form) :
         form.instance.course = CourseList.objects.get(pk=self.kwargs['pk'])
+        form.instance.sem=get_current_sem()
         req_stu_course = Courses.objects.get(course=form.instance.course,student=form.instance.student)
         req_stu_course.marks +=form.instance.marks
         req_stu_course.save()
@@ -107,6 +110,7 @@ class AddMarkView(ProfessorLoginRequiredMixin,CreateView):
         ex_eval = Evals.objects.get(title=self.kwargs['title'])
         form.instance.title = ex_eval.title
         form.instance.total_marks = ex_eval.total_marks
+        form.instance.sem=get_current_sem()
         return super(AddMarkView,self).form_valid(form)
 
     def get_success_url(self):
@@ -187,8 +191,9 @@ def add_students(request,pk):
             obj = form.save(commit=False)
             obj.course = course
             obj.marks = 0
+            obj.sem=get_current_sem()
             try:
-                Courses.objects.get(course=course,student=obj.student)
+                Courses.objects.get(course=course,student=obj.student,sem=get_current_sem())
                 messages.error(request,"The student is already enrolled in the course.")
                 return render(request,"professors/add_students.html",{"form":AddStudentsForm(),"pk":pk})
             except Courses.DoesNotExist:
@@ -215,6 +220,11 @@ class AnnouncementUpdateView(ProfessorLoginRequiredMixin,UpdateView):
     fields = ["title","msg","attachments"]
     template_name = "students/create.html"
     extra_context = {"prof":True}
+
+    def get_form(self, form_class=None):
+        form = super(AnnouncementUpdateView, self).get_form(form_class)
+        form.fields['attachments'].required = False
+        return form
 
     def get_object(self) :
         pk = self.kwargs.get("announce_pk")
@@ -268,7 +278,8 @@ def select_student_update_marks(request,pk,title):
             selected_course = get_object_or_404(CourseList,pk=pk)
             selected_eval = Evals.objects.get(course = selected_course,
                                               title=title,
-                                              student=form.cleaned_data["required_student"]
+                                              student=form.cleaned_data["required_student"],
+                                              sem=get_current_sem()
                                               )
             return redirect("update-marks",pk=pk,title=title,eval_pk=selected_eval.pk)
 
