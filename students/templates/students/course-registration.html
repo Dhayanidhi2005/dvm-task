@@ -1,0 +1,54 @@
+{% extends "login/base.html" %}
+
+{% block content %}
+    <h2>Your enrolled courses for this semester are</h2>
+    <p>CDCs are added by default no need to add them again.</p>
+    <ul>
+    {% for cdc in enrol_courses %}
+        <li>
+            {{ cdc.course.course_name }}(Credits={{cdc.course.credit}})
+        </li>
+    {% endfor %}
+    </ul>
+    <h4>Total number of credits is {{total_credits}}</h4>
+    <h3>Here are your Complusory Disciplinary Courses(CDCs) for this semester:</h3>
+    <ul>
+    {% for cdc in cdcs %}
+        <li>{{ cdc.course_name }}</li>
+    {% endfor %}
+    </ul>
+    {% if dels %}
+        <h3>Your DELs:</h3>
+        <ul>
+        {% for cdc in dels %}
+            <li>
+                {{ cdc.course_name }}(Credits={{cdc.credit}})
+                <a href="{%url "course-add" cdc.pk %}"><button>Add Course</button></a>
+            </li>
+        {% endfor %}
+        </ul>
+    {%endif%}
+    {% if opels %}
+    <h3>OPELs:</h3>
+    <ul>
+    {% for cdc in opels %}
+        <li>
+            {{ cdc.course_name }}(Credits={{cdc.credit}}) <a href="{%url "course-add" cdc.pk %}"></a>
+            <a href="{%url "course-add" cdc.pk %}"><button>Add Course</button></a>
+        </li>
+    {% endfor %}
+    </ul>
+    {%endif%}
+    {% if hels %}
+        <h3>HUELs:</h3>
+        <ul>
+        {% for cdc in huels %}
+            <li>
+                {{ cdc.course_name }}(Credits={{cdc.credit}}) <a href="{%url "course-add" cdc.pk %}"></a>
+                <a href="{%url "course-add" cdc.pk %}"><button>Add Course</button></a>
+            </li>
+        {% endfor %}
+        </ul>
+    {%endif%}
+    <a href="{%url "stu-home" %}"><button>Finish Registration</button></a>
+{% endblock %}

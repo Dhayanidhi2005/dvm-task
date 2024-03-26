@@ -1,0 +1,7 @@
+{% extends "login/base.html" %}
+
+{% block content %}
+    {% include "students/form.html" %}
+    <a href="{% url "prof-home" %}"><button>Skip this</button></a><br>
+    <a href="{% url "add-students" pk %}"><button>Save and add another student</button></a>
+{% endblock %}

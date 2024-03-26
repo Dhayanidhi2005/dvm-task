@@ -6,10 +6,24 @@
     <title>Nalanda</title>
 </head>
 <body>
-    <h1>Nalanda</h1>
+    <nav>
+        <h1>Nalanda</h1>
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url "logout" %}">
+                {% csrf_token %}
+                <button >Logout</button>
+            </form>
+            {% if prof %}
+                <a href="{% url "prof-home" %}"><button>Home</button></a>
+            {% else %}
+                <a href="{% url "stu-home" %}"><button>Home</button></a>
+            {% endif %}
+        {% endif %}
+    </nav>
+    <br>
     {% if messages %}
         {% for message in messages %}
-            {{ message }}
+            {{ message }}<br>
         {% endfor %}
     {% endif %}
     <br>

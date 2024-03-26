@@ -3,9 +3,21 @@
 {% block content %}
     {% for course in courses %}
         {% if prof %}
-            <a href="{% url "prof-coursedetail" course.pk %}">{{ course.course_name }}</a>
+            <ul><li>
+                <a href="{% url "prof-coursedetail" course.pk %}">{{ course.course_name }}</a>
+                <a href="{% url "add-students" course.pk %}"><button>Add Students to {{ course.course_name }}</button></a>
+            </li></ul>
         {% else %}
-            <a href="{% url "stu-coursedetail" course.course.pk %}">{{ course.course.course_name }}</a><br>
+            <ul><li>
+                <a href="{% url "stu-coursedetail" course.course.pk %}">{{ course.course.course_name }}</a>
+                <br>
+            </li></ul>
         {% endif %}
     {% endfor %}
+    <br>
+    {% if prof %}
+        <a href="{% url "add-course" %}"><button>Add Course</button></a>
+    {% else %}
+        <a href="{% url "course-reg" %}"><button>Course Registration</button></a>
+    {% endif %}
 {% endblock content %}

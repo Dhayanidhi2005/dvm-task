@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Content,Evals
+from .models import Content,Evals,CourseList,Courses
 from students.models import Students
 
 
@@ -58,3 +58,38 @@ class AddGradesForm(forms.Form):
     d= forms.IntegerField(label="Enter no of people for whom D should be added",min_value=0)
     e= forms.IntegerField(label="Enter no of people for whom E should be added",min_value=0)
     nc = forms.IntegerField(label="Enter no of people for whom NC should be added",min_value=0)
+
+class AddCourseForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AddCourseForm, self).__init__(*args, **kwargs)
+        self.fields['branch'].required = False
+
+    class Meta:
+        model = CourseList
+        fields = "__all__"
+        labels = {
+            "dept": "Department",
+            "course_id": "Course ID",
+            "course_name": "Course Name",
+            "cdcs":"CDCs",
+        }
+
+class AddStudentsForm(forms.ModelForm):
+
+    class Meta:
+        model = Courses
+        fields = ["student"]
+
+class UpdateStudentMarks(forms.Form):
+
+    required_student = forms.ChoiceField(label="Select Student for updating marks")
+
+    def __init__(self, pk,*args, **kwargs) :
+        #to give only the students who are enrolled in the course.
+        super(UpdateStudentMarks,self).__init__(*args, **kwargs)
+        self.fields["required_student"].choices = [
+             (choice.pk, choice) for choice in Students.objects.filter(courses__course__pk=pk)
+         ]
+        
+        
