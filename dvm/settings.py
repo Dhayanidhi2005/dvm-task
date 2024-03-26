@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = os.environ("SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG",cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -166,7 +166,7 @@ LOGOUT_REDIRECT_URL = "login"
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")
 MEDIA_URL = "/media/"
 
-if os.getenv('GAE_APPLICATION', None):
+if os.environ("WEBSITE_HOSTNAME"):
     EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
     ANYMAIL = {
         "MAILJET_API_KEY": os.environ["API_KEY"],
