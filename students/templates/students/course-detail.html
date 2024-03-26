@@ -6,53 +6,81 @@
     {% if prof %}
         <a href="{% url "add-announce" course.pk %}"><button>Add Annoucements</button></a>
     {%endif%}
-    <ul>
-    {% for annoucement in annoucements %}
-    <li>
-        <h3>{{annoucement.title}}</h3>
-        <p>{{annoucement.msg}}</p>
-        {%if announcement.attachments %}
-            <a href="{{annoucement.attachments.url}}">{{annoucement.attachments.name }}</a>
-            <br>
-        {% endif %}
-        <p>From:{{annoucement.prof}}</p>
-    </li>
-    {% endfor %}
-    </ul> 
+    {% if annoucements %}
+        <ul>
+        {% for annoucement in annoucements %}
+        <li>
+            <h3>{{annoucement.title}}</h3>
+            <p>{{annoucement.msg}}</p>
+            {%if announcement.attachments %}
+                <a href="{{annoucement.attachments.url}}">Click here to download attachment</a>
+                <br>
+            {% endif %}
+            <p>From:{{annoucement.prof}}</p>
+            {% if prof %}
+                <a href="{% url "update-announce" course.pk annoucement.pk %}"><button>Update Annoucement</button></a>
+                <a href="{% url "delete-announce" course.pk annoucement.pk %}"><button>Delete Annoucement</button></a>
+            {%endif%}
+        </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No Annoucements have been published yet.</p>
+    {% endif %}
+
     <h2>Course Content</h2>
     {% if prof %}
         <a href="{% url "add-content" course.pk %}"><button>Add Content</button></a>
     {%endif%}
-    <br>
-    <ul>
-    {% for content in contents %}
-        <li>
-        <h3>{{content.title}}</h3>
-        <a href="{{content.attachments.url}}">{{ content.attachments.name }}</a>
-        </li>
-    {% endfor %}
-    </ul>
+    {% if contents %}
+        <ul>
+        {% for content in contents %}
+            <li>
+            <h3>{{content.title}}</h3>
+            <a href="{{content.attachments.url}}">Click here to download attachment</a>
+            <br> <br>
+            {% if prof %}
+                <a href="{% url "update-content" course.pk content.pk %}"><button>Update Material</button></a>
+                <a href="{% url "delete-content" course.pk content.pk %}"><button>Delete Material</button></a>
+            {%endif%}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No Contents have been uploaded yet.</p>
+    {% endif %}
+
     <h2>Evaluatives</h2>
     {% if prof %}
         <a href="{% url "add-evals" course.pk %}"><button>Add Eval</button></a>
     {%endif%}
-    <br>
-    <ul>
-    {% for eval in evals %}
-        <li>
-        {% if prof %}
-            <h3>{{eval.title}}</h3>
-            <a href="{% url "add-eval-mark" course.pk eval.title %}"><button>Add Marks</button></a>
-        {% else %}
-            <h3>{{eval.title}}</h3>
-            Your Score:{{ eval.marks }} out of {{ eval.total_marks}}
-        {% endif %}
-        </li>
-    {% endfor %}
-    </ul>
+    {% if evals %}
+        <ul>
+        {% for eval in evals %}
+            <li>
+            {% if prof %}
+                <h3>{{eval.title}}</h3>
+                <a href="{% url "add-eval-mark" course.pk eval.title %}"><button>Add Marks</button></a>
+                <a href="{% url "select-eval-student" course.pk eval.title %}"><button>Update Marks</button></a>
+            {% else %}
+                <h3>{{eval.title}}</h3>
+                Your Score:{{ eval.marks }} out of {{ eval.total_marks}}
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No Evaluative marks have been uploaded yet.</p>
+    {% endif %}
+
     <h2>Final Grades</h2>
     {% if prof %}
-        <a href="{% url "add-grades" course.pk %}"><button>Publish Grades</button></a>
+        {% if grade %}
+            You've already published the grades.
+        {% else %}
+            <a href="{% url "add-grades" course.pk %}"><button>Publish Grades</button></a>
+        {% endif %}
+        
     {% else %}
         {% if grade %}
             <p>Your Grade:{{ grade}}</p>

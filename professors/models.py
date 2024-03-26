@@ -35,6 +35,8 @@ class CourseList(models.Model):
         ("SY2","Second Year Sem 1"),
         ("TY1","Third Year Sem 1"),
         ("TY2","Third Year Sem 2"),
+        ("4Y1","Fourth Year Sem 1"),
+        ("4Y2","Fourth Year Sem 2"),
     ]
 
     electives_choices = [
@@ -63,11 +65,13 @@ class Courses(models.Model):
     student = models.ForeignKey(Students,on_delete=models.CASCADE)
     marks = models.IntegerField()
     grade=models.CharField(max_length=2,null=True)
+    date_added = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.course.course_name}:{self.student.bitsid}"
     
     class Meta:
+        unique_together = ("student", "course","date_added")
         verbose_name_plural = "Courses"
 
 class Professors(models.Model):
