@@ -15,6 +15,6 @@ urlpatterns = [
     path("courses/<int:pk>/grades/add",views.add_final_grade,name="add-grades"),
     path("courses/<int:pk>/evals/add",views.EvalCreateView.as_view(),name="add-evals"),
     path("courses/<int:pk>/evals/<str:title>/marks/add",views.AddMarkView.as_view(),name="add-eval-mark"),
-    path("courses/<int:pk>/evals/<str:title>/marks/select-student",views.eval_select_student,name="select-eval-student"),
+    path("courses/<int:pk>/evals/<str:title>/marks/select-student",views.select_student_update_marks,name="select-eval-student"),
     path("courses/<int:pk>/evals/<str:title>/marks/<int:eval_pk>",views.MarkUpdateView.as_view(),name="update-marks"),
 ]

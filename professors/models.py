@@ -112,6 +112,9 @@ class Content(models.Model):
     attachments = models.FileField(upload_to=custom_path_for_content)
     course = models.ForeignKey(CourseList,on_delete=models.CASCADE)
 
+    def __str__(self) :
+        return f"{self.title}"
+
 class Evals(models.Model):
     title = models.CharField(max_length=100)
     total_marks = models.IntegerField()
@@ -120,4 +123,4 @@ class Evals(models.Model):
     marks = models.IntegerField(default=0)
 
     def __str__(self) :
-        return f"{self.student.first_name}'s {self.title}"
+        return f"{self.student.bitsid}'s {self.title}"

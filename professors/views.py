@@ -35,8 +35,8 @@ def add_announcements(request,pk):
                 prof = req_prof,
                 course = req_course,
             )
-            subject = CourseList.course_name+":"+form.cleaned_data['title']
-            message = form.cleaned_data['msg']+"\nfrom:"+req_prof
+            subject = req_course.course_name+":"+form.cleaned_data['title']
+            message = form.cleaned_data['msg']+"\nfrom:"+str(req_prof)
             from_email =  settings.EMAIL_HOST_USER
             recipient_list = []
             email_queryset = Students.objects.filter(courses__course__pk=pk).values("user__email")
@@ -48,6 +48,7 @@ def add_announcements(request,pk):
     form = AddAnnouncementForm()
     return render(request,"students/create.html",{
         "form":form,
+        "prof":True,
     })
 
 class ContentCreateView(ProfessorLoginRequiredMixin,View):
@@ -55,6 +56,7 @@ class ContentCreateView(ProfessorLoginRequiredMixin,View):
         form = AddContentForm()
         return render(request,"students/create.html",{
             "form":form,
+            "prof":True,
         })
     
     def post(self,request,*args, **kwargs):
@@ -66,11 +68,13 @@ class ContentCreateView(ProfessorLoginRequiredMixin,View):
             return redirect("prof-coursedetail",pk=kwargs["pk"])
         return render(request,"students/create.html",{
             "form":form,
+            "prof":True,
         })
     
 class EvalCreateView(ProfessorLoginRequiredMixin,CreateView):
     form_class = AddEvalsForm
     template_name = "students/create.html"
+    extra_context = {"prof":True}
 
     def form_valid(self, form) :
         form.instance.course = CourseList.objects.get(pk=self.kwargs['pk'])
@@ -85,6 +89,7 @@ class EvalCreateView(ProfessorLoginRequiredMixin,CreateView):
 class AddMarkView(ProfessorLoginRequiredMixin,CreateView):
     form_class = AddMarksForm
     template_name = "students/create.html"
+    extra_context = {"prof":True}
 
     def get_form_kwargs(self,**kwargs):
         #gets the current course id
@@ -145,12 +150,14 @@ def add_final_grade(request,pk):
     form = AddGradesForm()
     return render(request,"students/create.html",{
         "form":form,
+        "prof":True,
     })
 
 class AddCourseView(ProfessorLoginRequiredMixin,CreateView):
     model = CourseList
     form_class = AddCourseForm
     template_name = "students/create.html"
+    extra_context = {"prof":True}
 
     def form_valid(self, form):
         try:
@@ -191,6 +198,7 @@ def add_students(request,pk):
     return render(request,"professors/add_students.html",{
         "form":form,
         "pk":pk,
+        "prof":True,
     })
 
 @professor_required
@@ -206,6 +214,7 @@ class AnnouncementUpdateView(ProfessorLoginRequiredMixin,UpdateView):
     model = Announcements
     fields = ["title","msg","attachments"]
     template_name = "students/create.html"
+    extra_context = {"prof":True}
 
     def get_object(self) :
         pk = self.kwargs.get("announce_pk")
@@ -217,6 +226,7 @@ class AnnouncementUpdateView(ProfessorLoginRequiredMixin,UpdateView):
 class AnnouncementDeleteView(ProfessorLoginRequiredMixin,DeleteView):
     model = Announcements
     template_name = "professors/delete.html"
+    extra_context = {"prof":True}
 
     def get_object(self) :
         pk = self.kwargs.get("announce_pk")
@@ -229,6 +239,7 @@ class ContentUpdateView(ProfessorLoginRequiredMixin,UpdateView):
     model = Content
     fields = ["title","attachments"]
     template_name = "students/create.html"
+    extra_context = {"prof":True}
 
     def get_object(self) :
         pk = self.kwargs.get("content_pk")
@@ -240,6 +251,7 @@ class ContentUpdateView(ProfessorLoginRequiredMixin,UpdateView):
 class ContentDeleteView(ProfessorLoginRequiredMixin,DeleteView):
     model = Content
     template_name = "professors/delete.html"
+    extra_context = {"prof":True}
 
     def get_object(self) :
         pk = self.kwargs.get("content_pk")
@@ -249,7 +261,7 @@ class ContentDeleteView(ProfessorLoginRequiredMixin,DeleteView):
         return reverse("prof-coursedetail",kwargs={"pk":self.kwargs["pk"]})
 
 @professor_required 
-def eval_select_student(request,pk,title):
+def select_student_update_marks(request,pk,title):
     if request.method == "POST":
         form = UpdateStudentMarks(pk=pk,data=request.POST)
         if form.is_valid():
@@ -263,12 +275,14 @@ def eval_select_student(request,pk,title):
     form = UpdateStudentMarks(pk=pk)
     return render(request,"students/create.html",{
         "form":form,
+        "prof":True,
     })
 
 class MarkUpdateView(ProfessorLoginRequiredMixin,UpdateView):
     model = Evals
     fields = ["title","marks"]
     template_name = "students/create.html"
+    extra_context = {"prof":True}
 
     def get_object(self) :
         pk = self.kwargs.get("eval_pk")
