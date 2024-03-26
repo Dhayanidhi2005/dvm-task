@@ -165,17 +165,3 @@ LOGOUT_REDIRECT_URL = "login"
 
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")
 MEDIA_URL = "/media/"
-
-if os.environ("WEBSITE_HOSTNAME"):
-    EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
-    ANYMAIL = {
-        "MAILJET_API_KEY": os.environ["API_KEY"],
-        "MAILJET_SECRET_KEY": os.environ["API_SECRET"],
-    }
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = "smtp.gmail.com"
-    EMAIL_USE_TLS = True
-    EMAIL_PORT = 587
-    EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-    EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
