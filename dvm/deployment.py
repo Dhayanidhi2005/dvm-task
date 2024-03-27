@@ -36,9 +36,8 @@ DATABASES = {
     }
 }
 
-if os.environ("WEBSITE_HOSTNAME"):
-    EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
-    ANYMAIL = {
-        "MAILJET_API_KEY": os.environ["API_KEY"],
-        "MAILJET_SECRET_KEY": os.environ["API_SECRET"],
-    }
+EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
+ANYMAIL = {
+    "MAILJET_API_KEY": os.environ["API_KEY"],
+    "MAILJET_SECRET_KEY": os.environ["API_SECRET"],
+}
