@@ -76,3 +76,4 @@ entrypoint.sh
 entrypoint.prod.sh
 .env.prod
 .env.prod.db
+.dockerignore

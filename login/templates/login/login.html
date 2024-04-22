@@ -3,7 +3,7 @@
 
 {% block content %}
     <h2>Students Login</h2>
-    <a href="{% provider_login_url 'google' %}?next=/students">Login With Google</a>
+    {% comment %} <a href="{% provider_login_url 'google' %}?next=/students">Login With Google</a> {% endcomment %}
     <h2>Professors Login</h2>
     <form method="post">
         {% csrf_token %}
